@@ -1,0 +1,3 @@
+bridge beetween domain and data
+Actual implementations of repository are on the data layer
+Responsible for coordenate different data from the different data sources
