@@ -21,7 +21,7 @@ class _NewsApiService implements NewsApiService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse> getNewsArticles({
+  Future<HttpResponse<List<ArticleModel>>> getNewsArticles({
     apiKey,
     country,
     category,
@@ -30,30 +30,28 @@ class _NewsApiService implements NewsApiService {
     final queryParameters = <String, dynamic>{
       r'apiKey': apiKey,
       r'country': country,
-      r'category': category
+      r'category': category,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-      _setStreamType<HttpResponse>(Options(
-        method: 'GET',
-        headers: _headers,
-        extra: _extra,
-      ).compose(
-        _dio.options,
-        '/top-headlines',
-        queryParameters: queryParameters,
-        data: _data,
-      ).copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)),
-    );
-
-    // Deserialize the response data
-    final data = (_result.data['articles'] as List)
-        .map((article) => ArticleModel.fromJson(article as Map<String, dynamic>))
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<HttpResponse<List<ArticleModel>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/top-headlines',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => ArticleModel.fromJson(i as Map<String, dynamic>))
         .toList();
-
-    final httpResponse = HttpResponse(data, _result);
+    final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
 
