@@ -1,0 +1,1 @@
+Entities are business objects of an application or a system
